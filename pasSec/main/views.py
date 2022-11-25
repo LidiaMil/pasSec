@@ -4,7 +4,7 @@ from django.http import HttpResponse
 # Create your views here.
 
 def index(req):
-    return HttpResponse("<h5>Hiiiiii</h5>")
+    return render(req, "main/index.html")
 
 def about(req):
-    return HttpResponse("<h6>About us</h6>")
+    return HttpResponse("main/about.html")
