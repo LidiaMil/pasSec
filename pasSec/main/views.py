@@ -10,6 +10,25 @@ def index(req):
 def about(req):
     return render(req,"main/about.html")
 
+def register(req):
+    error = ''
+    if req.method == 'POST':
+        form = UsersForm(req.POST)
+        print(req.POST)
+        if form.is_valid():
+            form.save()
+        else:
+            error = 'invalid'
+
+
+    form = UsersForm()
+    context = {
+        'form': form,
+        'error': error
+    }
+    return render(req,"main/register.html", context)
+
+
 def create(req):
     error = ''
     if req.method == 'POST':

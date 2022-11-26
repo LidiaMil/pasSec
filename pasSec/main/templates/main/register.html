@@ -1,11 +1,11 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-create Password
+create Users
 {% endblock %}
 
 {% block content %}
-    <h1>create Password</h1>
+    <h1>create Users</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.email }}<br>

@@ -8,8 +8,10 @@ from django.contrib.auth.models import (
 )
 from django.db import models
 
-from pasSec.core.models import TimestampedModel
+from core.models import TimestampedModel
+import sys
 
+sys.path.insert(0, 'pasSec/core/models.py')
 
 class UserManager(BaseUserManager):
     """
