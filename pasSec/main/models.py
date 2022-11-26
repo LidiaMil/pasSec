@@ -8,3 +8,21 @@ class Users(models.Model):
 
     def __str__(self):
         return self.email
+
+# class Methods(models.Model):
+#     id = models.AutoField(primary_key=True)
+#     name = models.CharField('name', max_length = 250)
+
+#     def __str__(self):
+#         return self.name
+
+# class Passwords(models.Model):
+#     site = models.CharField('site', max_length = 250)
+#     username = models.CharField('username', max_length = 60)
+#     password = models.CharField('password', max_length = 60)
+#     username = models.CharField('username')
+#     user = models.ForeignKey(Users, on_delete=models.CASCADE)
+#     method = models.ForeignKey(Methods, on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return self.site
