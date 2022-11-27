@@ -18,6 +18,7 @@ export default function App() {
               <Route exact path="/register" component={Register} />
               <ProtectedRoute exact path="/create" component={CreatePassword} />
               <ProtectedRoute exact path="/list" component={PasswordList} />
+              <ProtectedRoute exact path="/save" component={Profile} />
             </Switch>
           </div>
         </Router>
