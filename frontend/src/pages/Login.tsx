@@ -91,8 +91,9 @@ function Login() {
               disabled={loading}
               className="rounded border-gray-300 p-2 w-32 bg-blue-700 text-white"
             >
-              Login
+              Войти
             </button>
+            <a href="/register">Регистрация</a>
           </div>
         </form>
       </div>
