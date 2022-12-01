@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState }  from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory, useLocation} from "react-router";
 import authSlice from "../store/slices/auth";
@@ -6,6 +6,9 @@ import useSWR from 'swr';
 import {fetcher} from "../utils/axios";
 import {UserResponse} from "../utils/types";
 import {RootState} from "../store";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import axios from "axios";
 
 interface LocationState {
     userId: string;
@@ -16,6 +19,8 @@ const SavePassword = () => {
   const account = useSelector((state: RootState) => state.auth.account);
   const dispatch = useDispatch();
   const history = useHistory();
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   // @ts-ignore
   const userId = account?.id;
 
@@ -26,20 +31,43 @@ const SavePassword = () => {
     history.push("/login");
   };
 
+  const handleSavePassword = (site:string, username: string, password: string) => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}auth/register/`, { site, username, password })
+      .then((res) => {
+        console.log(res,'reeees---------')
+        dispatch(
+          authSlice.actions.setAuthTokens({
+            token: res.data.access,
+            refreshToken: res.data.refresh,
+          })
+        );
+        dispatch(authSlice.actions.setAccount(res.data.user));
+        setLoading(false);
+        console.log(res.data,'res.data')
+        history.push("/", {
+          userId: res.data.id
+        });
+      })
+      .catch((err) => {
+        setMessage(err.response.data.detail);
+      });
+  };
+
   const formik = useFormik({
     initialValues: {
-      username: "l",
-      email: "",
+      site: "",
+      username: "",
       password: "",
     },
     onSubmit: (values) => {
       setLoading(true);
-      handleSingUp(values.username, values.email, values.password);
+      handleSavePassword(values.site, values.username, values.password);
     },
     validationSchema: Yup.object({
-      username: Yup.string().trim().required("required field"),
-      email: Yup.string().trim().required("required field"),
-      password: Yup.string().trim().required("required field"),
+        site: Yup.string().trim().required("required field"),
+        username: Yup.string().trim().required("required field"),
+        password: Yup.string().trim().required("required field"),
     }),
   });
 
@@ -66,14 +94,25 @@ const SavePassword = () => {
         </button>
       </div>
     </header>
+    </div>
     <div className="h-screen flex bg-gray-bg1">
       <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-16">
         <h1 className="text-2xl font-medium text-primary mt-4 mb-12 text-center">
-           register in our app 🔐
+           Сохранить пароль
         </h1>
         <form onSubmit={formik.handleSubmit}>
           <div className="space-y-4">
           <input
+              className="border-b border-gray-300 w-full px-2 h-8 rounded focus:border-blue-500"
+              id="site"
+              type="site"
+              placeholder="site"
+              name="site"
+              value={formik.values.site}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            <input
               className="border-b border-gray-300 w-full px-2 h-8 rounded focus:border-blue-500"
               id="username"
               type="username"
@@ -83,18 +122,6 @@ const SavePassword = () => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
-            {formik.errors.email ? <div>{formik.errors.email} </div> : null}
-            <input
-              className="border-b border-gray-300 w-full px-2 h-8 rounded focus:border-blue-500"
-              id="email"
-              type="email"
-              placeholder="Email"
-              name="email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.errors.email ? <div>{formik.errors.email} </div> : null}
             <input
               className="border-b border-gray-300 w-full px-2 h-8 rounded focus:border-blue-500"
               id="password"
@@ -126,7 +153,8 @@ const SavePassword = () => {
         </form>
       </div>
     </div>
+    </div>
   );
-};
+}
 
 export default SavePassword;
