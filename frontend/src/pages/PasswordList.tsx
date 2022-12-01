@@ -11,6 +11,11 @@ interface LocationState {
     userId: string;
 }
 
+// тут отобразим все пароли 
+// у каждого пароля методы
+// изменить
+// удалить
+// посмотреть
 
 const PasswordList = () => {
   const account = useSelector((state: RootState) => state.auth.account);
