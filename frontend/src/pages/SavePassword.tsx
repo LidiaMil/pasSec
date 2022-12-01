@@ -14,6 +14,10 @@ interface LocationState {
     userId: string;
 }
 
+//тут надо создать красивые поля input 
+// сайт, логин и пароль от сайта
+// селект для выбора метода 
+// и кнопка сохранить
 
 const SavePassword = () => {
   const account = useSelector((state: RootState) => state.auth.account);
