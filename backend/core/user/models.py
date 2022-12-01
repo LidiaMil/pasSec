@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 class UserManager(BaseUserManager):
 
     def create_user(self, username, email, password=None, **kwargs):
+        print(self,'self-------')
         """Create and return a `User` with an email, phone number, username and password."""
         if username is None:
             raise TypeError('Users must have a username.')
@@ -22,6 +23,8 @@ class UserManager(BaseUserManager):
         """
         Create and return a `User` with superuser (admin) permissions.
         """
+        print(self,'self-------')
+
         if password is None:
             raise TypeError('Superusers must have a password.')
         if email is None:
@@ -52,3 +55,26 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.email}"
+
+
+class Method(models.Model):
+    name = models.CharField(db_index=True, max_length=500)
+    created = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+
+class Password(models.Model):
+    site = models.CharField(db_index=True, max_length=500)
+    username = models.CharField(db_index=True, max_length=255)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_set')
+    method_id = models.ForeignKey(Method, on_delete=models.CASCADE, related_name='password_set')
+    password = models.CharField(db_index=True, max_length=255)
+    created = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.username}"

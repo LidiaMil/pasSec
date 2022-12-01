@@ -43,8 +43,8 @@ function Login() {
       handleLogin(values.email, values.password);
     },
     validationSchema: Yup.object({
-      email: Yup.string().trim().required("Le nom d'utilisateur est requis"),
-      password: Yup.string().trim().required("Le mot de passe est requis"),
+      email: Yup.string().trim().required("required field"),
+      password: Yup.string().trim().required("required field"),
     }),
   });
 
@@ -91,8 +91,9 @@ function Login() {
               disabled={loading}
               className="rounded border-gray-300 p-2 w-32 bg-blue-700 text-white"
             >
-              Login
+              Войти
             </button>
+            <a href="/register">Регистрация</a>
           </div>
         </form>
       </div>

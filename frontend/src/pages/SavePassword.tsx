@@ -1,0 +1,160 @@
+import React, { useState }  from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory, useLocation} from "react-router";
+import authSlice from "../store/slices/auth";
+import useSWR from 'swr';
+import {fetcher} from "../utils/axios";
+import {UserResponse} from "../utils/types";
+import {RootState} from "../store";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import axios from "axios";
+
+interface LocationState {
+    userId: string;
+}
+
+
+const SavePassword = () => {
+  const account = useSelector((state: RootState) => state.auth.account);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  // @ts-ignore
+  const userId = account?.id;
+
+  const user = useSWR<UserResponse>(`/user/${userId}/`, fetcher)
+
+  const handleLogout = () => {
+    dispatch(authSlice.actions.setLogout());
+    history.push("/login");
+  };
+
+  const handleSavePassword = (site:string, username: string, password: string) => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}auth/register/`, { site, username, password })
+      .then((res) => {
+        console.log(res,'reeees---------')
+        dispatch(
+          authSlice.actions.setAuthTokens({
+            token: res.data.access,
+            refreshToken: res.data.refresh,
+          })
+        );
+        dispatch(authSlice.actions.setAccount(res.data.user));
+        setLoading(false);
+        console.log(res.data,'res.data')
+        history.push("/", {
+          userId: res.data.id
+        });
+      })
+      .catch((err) => {
+        setMessage(err.response.data.detail);
+      });
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      site: "",
+      username: "",
+      password: "",
+    },
+    onSubmit: (values) => {
+      setLoading(true);
+      handleSavePassword(values.site, values.username, values.password);
+    },
+    validationSchema: Yup.object({
+        site: Yup.string().trim().required("required field"),
+        username: Yup.string().trim().required("required field"),
+        password: Yup.string().trim().required("required field"),
+    }),
+  });
+
+  return (
+    <div className="w-full h-screen">
+      <div className="w-full p-6">
+      <header className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+      <a href="/" className="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+        <svg className="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use href="#bootstrap"></use></svg>
+      </a>
+
+      <ul className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="/create" className="nav-link px-2 link-secondary">Сгенерировать пароль</a></li>
+        <li><a href="/list" className="nav-link px-2 link-dark">Схраненные пароли</a></li>
+        <li><a href="/save" className="nav-link px-2 link-dark">Сохранить пароль</a></li>
+      </ul>
+
+      <div className="col-md-3 text-end">
+        <button
+          onClick={handleLogout}
+          className="btn btn-primary"
+        >
+          Выйти
+        </button>
+      </div>
+    </header>
+    </div>
+    <div className="h-screen flex bg-gray-bg1">
+      <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-16">
+        <h1 className="text-2xl font-medium text-primary mt-4 mb-12 text-center">
+           Сохранить пароль
+        </h1>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="space-y-4">
+          <input
+              className="border-b border-gray-300 w-full px-2 h-8 rounded focus:border-blue-500"
+              id="site"
+              type="site"
+              placeholder="site"
+              name="site"
+              value={formik.values.site}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            <input
+              className="border-b border-gray-300 w-full px-2 h-8 rounded focus:border-blue-500"
+              id="username"
+              type="username"
+              placeholder="Username"
+              name="username"
+              value={formik.values.username}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            <input
+              className="border-b border-gray-300 w-full px-2 h-8 rounded focus:border-blue-500"
+              id="password"
+              type="password"
+              placeholder="Password"
+              name="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.errors.password ? (
+              <div>{formik.errors.password} </div>
+            ) : null}
+          </div>
+          <div className="text-danger text-center my-2" hidden={false}>
+            {message}
+          </div>
+
+          <div className="flex justify-center items-center mt-6">
+            <button
+              type="submit"
+              disabled={loading}
+              className="rounded border-gray-300 p-2 w-32 bg-blue-700 text-white"
+            >
+              Регистрация
+            </button>
+            <a href="/login">Я уже зарегестрирован</a>
+          </div>
+        </form>
+      </div>
+    </div>
+    </div>
+  );
+}
+
+export default SavePassword;

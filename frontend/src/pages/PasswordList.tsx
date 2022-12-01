@@ -12,7 +12,7 @@ interface LocationState {
 }
 
 
-const Profile = () => {
+const PasswordList = () => {
   const account = useSelector((state: RootState) => state.auth.account);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -61,4 +61,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default PasswordList;
