@@ -105,9 +105,9 @@ function Register() {
               disabled={loading}
               className="rounded border-gray-300 p-2 w-32 bg-blue-700 text-white"
             >
-              Sign up
+              Регистрация
             </button>
-            
+            <a href="/login">Я уже зарегестрирован</a>
           </div>
         </form>
       </div>
