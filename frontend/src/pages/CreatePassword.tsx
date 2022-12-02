@@ -15,6 +15,7 @@ interface LocationState {
 // сколько паролей
 // длина желаемых паролей
 // допустимы символы
+// функция копирования
 
 const CreatePassword = () => {
   const account = useSelector((state: RootState) => state.auth.account);
