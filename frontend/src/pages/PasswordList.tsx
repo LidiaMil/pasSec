@@ -16,6 +16,7 @@ interface LocationState {
 // изменить
 // удалить
 // посмотреть
+// функция копирования
 
 const PasswordList = () => {
   const account = useSelector((state: RootState) => state.auth.account);
