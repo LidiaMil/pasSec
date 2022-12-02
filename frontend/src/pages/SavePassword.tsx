@@ -18,6 +18,7 @@ interface LocationState {
 // сайт, логин и пароль от сайта
 // селект для выбора метода 
 // и кнопка сохранить
+// редиркет на список паролей
 
 const SavePassword = () => {
   const account = useSelector((state: RootState) => state.auth.account);
