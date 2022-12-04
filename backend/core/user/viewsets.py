@@ -1,4 +1,4 @@
-from backend.core.user.serializers import PasswordSerializer
+from backend.core.user.serializers import MethodSerializer, PasswordSerializer
 from core.user.serializers import UserSerializer
 from core.user.models import User, Password, Method
 from rest_framework import viewsets
@@ -35,7 +35,26 @@ class PasswordViewSet(viewsets.ModelViewSet):
     ordering = ['-updated']
 
     def get_queryset(self):
-        return User.objects.all()
+        return Password.objects.all()
+
+    def get_object(self):
+        lookup_field_value = self.kwargs[self.lookup_field]
+
+        obj = User.objects.get(id=lookup_field_value)
+        self.check_object_permissions(self.request, obj)
+
+        return obj
+
+class MethodViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get']
+    serializer_class = MethodSerializer
+    permission_classes = (IsAuthenticated,)
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['updated']
+    ordering = ['-updated']
+
+    def get_queryset(self):
+        return Method.objects.all()
 
     def get_object(self):
         lookup_field_value = self.kwargs[self.lookup_field]
