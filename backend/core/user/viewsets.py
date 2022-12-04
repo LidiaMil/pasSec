@@ -40,7 +40,7 @@ class PasswordViewSet(viewsets.ModelViewSet):
     def get_object(self):
         lookup_field_value = self.kwargs[self.lookup_field]
 
-        obj = User.objects.get(id=lookup_field_value)
+        obj = Password.objects.get(id=lookup_field_value)
         self.check_object_permissions(self.request, obj)
 
         return obj
@@ -59,7 +59,7 @@ class MethodViewSet(viewsets.ModelViewSet):
     def get_object(self):
         lookup_field_value = self.kwargs[self.lookup_field]
 
-        obj = User.objects.get(id=lookup_field_value)
+        obj = Method.objects.get(id=lookup_field_value)
         self.check_object_permissions(self.request, obj)
 
         return obj
