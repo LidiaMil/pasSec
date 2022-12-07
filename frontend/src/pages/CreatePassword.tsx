@@ -62,7 +62,79 @@ const CreatePassword = () => {
               :
               <p className="text-center items-center">Loading ...</p>
       }
+      <div className="d-flex gap-5 justify-content-center">
+  <div className="list-group mx-0 w-auto">
+    <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="checkbox" value=""/>
+      <span>
+        Цифры
+        <small className="d-block text-muted">от 0 до 9</small>
+      </span>
+    </label>
+    <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="checkbox" value=""/>
+      <span>
+        Строчные буквы
+        <small className="d-block text-muted">a-z</small>
+      </span>
+    </label>
+    <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="checkbox" value=""/>
+      <span>
+        Заглавные буквы
+        <small className="d-block text-muted">A-Z</small>
+      </span>
+    </label>
+    <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="checkbox" value=""/>
+      <span>
+        Специальные символы
+        <small className="d-block text-muted">! " # $ % & ' ( ) * + , - . / : ; = ? @ [ \ ] ^ _`  | ~ </small>
+      </span>
+    </label>
+    <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="checkbox" value=""/>
+      <span>
+        Избегать повторения символов
+      </span>
+    </label>
   </div>
+
+  <div className="list-group mx-0 w-auto">
+    <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios1" value=""/>
+      <span>
+        Метод 1
+        <small className="d-block text-muted">Описание преимущества метода 1</small>
+      </span>
+    </label>
+    <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios2" value=""/>
+      <span>
+      Метод 2
+        <small className="d-block text-muted">Описание преимущества метода 2</small>
+      </span>
+    </label>
+    <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios3" value=""/>
+      <span>
+      Метод 3
+        <small className="d-block text-muted">Описание преимущества метода 3</small>
+      </span>
+    </label>
+  </div>
+
+  <div className="list-group mx-0 w-auto">
+  <label className="form-label">Количество паролей</label>
+  <input type="range" className="form-range" id="customRange1"/>
+  <label className="form-label">Длина паролей</label>
+  <input type="range" className="form-range" id="customRange1"/>
+
+  </div>
+
+</div>
+  </div>
+
   );
 };
 
