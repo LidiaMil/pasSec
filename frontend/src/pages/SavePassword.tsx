@@ -100,7 +100,7 @@ const SavePassword = () => {
       </div>
     </header>
     </div>
-    <div className="h-screen flex bg-gray-bg1">
+    <div className="h-screen bg-gray-bg1">
       <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-16">
         <h1 className="text-2xl font-medium text-primary mt-4 mb-12 text-center">
            Сохранить пароль
@@ -111,8 +111,8 @@ const SavePassword = () => {
               className="border-b border-gray-300 w-full px-2 h-8 rounded focus:border-blue-500"
               id="site"
               type="site"
-              placeholder="site"
-              name="site"
+              placeholder="Site"
+              name="Site"
               value={formik.values.site}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
