@@ -132,6 +132,14 @@ const CreatePassword = () => {
   </div>
 
 </div>
+<div className="col-md-8 text-end">
+        <button
+          // onClick={handleLogout}
+          className="btn btn-primary"
+        >
+          Сгенерировать
+        </button>
+      </div>
   </div>
 
   );
