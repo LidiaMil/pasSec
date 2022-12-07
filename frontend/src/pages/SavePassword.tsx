@@ -1,14 +1,14 @@
-import axios from "axios";
-import { useFormik } from "formik";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router";
-import useSWR from 'swr';
-import * as Yup from "yup";
-import { RootState } from "../store";
+import React, { useState }  from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useHistory, useLocation} from "react-router";
 import authSlice from "../store/slices/auth";
-import { fetcher } from "../utils/axios";
-import { UserResponse } from "../utils/types";
+import useSWR from 'swr';
+import {fetcher} from "../utils/axios";
+import {UserResponse} from "../utils/types";
+import {RootState} from "../store";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import axios from "axios";
 
 interface LocationState {
     userId: string;
@@ -151,9 +151,8 @@ const SavePassword = () => {
               disabled={loading}
               className="rounded border-gray-300 p-2 w-32 bg-blue-700 text-white"
             >
-              Регистрация
+              Сохранить
             </button>
-            <a href="/login">Я уже зарегестрирован</a>
           </div>
         </form>
       </div>
