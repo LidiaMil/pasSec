@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import useSWR from 'swr';
@@ -6,9 +6,12 @@ import { RootState } from "../store";
 import authSlice from "../store/slices/auth";
 import { fetcher } from "../utils/axios";
 import { PasswordResponse, UserResponse } from "../utils/types";
+import { useTable } from 'react-table';
+import BTable from 'react-bootstrap/Table';
 
-interface LocationState {
-    userId: string;
+interface TableState {
+  columns: any;
+  data: any;
 }
 
 // тут отобразим все пароли 
@@ -17,6 +20,47 @@ interface LocationState {
 // удалить
 // посмотреть
 // функция копирования
+
+
+function Table({ columns, data }: TableState) {
+  // Use the state and functions returned from useTable to build your UI
+  const { getTableProps, headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data,
+  })
+  // Render the UI for your table
+  return (
+    <BTable striped bordered hover size="sm" {...getTableProps()}>
+      <thead>
+        {headerGroups.map(headerGroup => (
+          <tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map(column => (
+              <th {...column.getHeaderProps()}>
+                {column.render('Header')}
+              </th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {rows.map((row, i) => {
+          prepareRow(row)
+          return (
+            <tr {...row.getRowProps()}>
+              {row.cells.map(cell => {
+                return (
+                  <td {...cell.getCellProps()}>
+                    {cell.render('Cell')}
+                  </td>
+                )
+              })}
+            </tr>
+          )
+        })}
+      </tbody>
+    </BTable>
+  )
+}
 
 const PasswordList = () => {
   const account = useSelector((state: RootState) => state.auth.account);
@@ -30,7 +74,71 @@ const PasswordList = () => {
 
   const user = useSWR<UserResponse>(`/user/${userId}/`, fetcher)
   const password = useSWR<PasswordResponse>(`/password/view/`, fetcher)
-  console.log(password,'password')
+  console.log(password.data,'password', user)
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Менеджер паролей',
+        columns: [
+          {
+            width: 300,
+            Header: 'site',
+            accessor: 'site',
+          },
+          {
+            width: 150,
+            Header: 'username',
+            accessor: 'username',
+          },
+          {
+            width: 150,
+            Header: 'password',
+            accessor: 'password',
+          },
+          {
+            width: 40,
+            Header: 'look',
+            accessor: 'look',
+            Cell: () => (
+<button onClick={handleOpenEye}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
+  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
+  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
+</svg></button>
+      // {eye ? (
+      //   <ul className="menu">
+      //     <li className="menu-item">
+      //       <button onClick={lookPassword}>Посмотреть пароль</button>
+      //     </li>
+      //   </ul>
+      // ) : null}
+              )
+          },
+          {
+            width: 40,
+            Header: 'action',
+            accessor: 'action',
+            Cell: () => (
+              <button onClick={handleOpen}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path>
+</svg></button>
+      // {open ? (
+      //   <ul className="menu">
+      //     <li className="menu-item">
+      //       <button onClick={deletePassword}>Удалить пароль</button>
+      //     </li>
+      //     <li className="menu-item">
+      //       <button onClick={changePassword}>Изменить пароль</button>
+      //     </li>
+      //   </ul>
+      // ) : null}
+      )
+          },
+        ],
+      },
+    ],
+    []
+  )
   const handleLogout = () => {
     dispatch(authSlice.actions.setLogout());
     history.push("/login");
@@ -85,6 +193,17 @@ const PasswordList = () => {
       </div>
     </header>
       </div>
+      <div>
+      {
+          password.data ?
+              <div className="w-full h-full text-center items-center">
+                   <Table columns={columns} data={password.data} />
+              </div>
+              :
+              <p className="text-center items-center">Loading ...</p>
+      }
+    </div>
+
 <div className="h-screen bg-gray-bg">
 <div className="w-full m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-1 px-3">
 
