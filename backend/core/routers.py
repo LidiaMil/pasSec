@@ -1,5 +1,6 @@
 from rest_framework.routers import SimpleRouter
-from core.user.viewsets import UserViewSet
+from core.user.serializers import PassordCreateViewSet
+from core.user.viewsets import UserViewSet, PasswordViewSet
 from core.auth.viewsets import LoginViewSet, RegistrationViewSet, RefreshViewSet
 
 
@@ -14,8 +15,8 @@ routes.register(r'auth/refresh', RefreshViewSet, basename='auth-refresh')
 routes.register(r'user', UserViewSet, basename='user')
 
 # PASSWORD
-routes.register(r'create', UserViewSet, basename='create')
-routes.register(r'save', UserViewSet, basename='create')
+routes.register(r'password/view', PasswordViewSet, basename='view')
+routes.register(r'password/save', PassordCreateViewSet, basename='save')
 
 
 

@@ -36,21 +36,15 @@ const SavePassword = () => {
     history.push("/login");
   };
 
-  const handleSavePassword = (site:string, username: string, password: string) => {
+  const handleSavePassword = (site:string, username: string, password: string, method_id = 1 ) => {
     axios
-      .post(`${process.env.REACT_APP_API_URL}auth/register/`, { site, username, password })
+      .post(`${process.env.REACT_APP_API_URL}password/save/`, { site, username, password, method_id, user_id: userId })
       .then((res) => {
         console.log(res,'reeees---------')
-        dispatch(
-          authSlice.actions.setAuthTokens({
-            token: res.data.access,
-            refreshToken: res.data.refresh,
-          })
-        );
-        dispatch(authSlice.actions.setAccount(res.data.user));
+        // dispatch(authSlice.actions.setAccount(res.data.user));
         setLoading(false);
         console.log(res.data,'res.data')
-        history.push("/", {
+        history.push("/list", {
           userId: res.data.id
         });
       })
@@ -112,7 +106,7 @@ const SavePassword = () => {
               id="site"
               type="site"
               placeholder="Site"
-              name="Site"
+              name="site"
               value={formik.values.site}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
