@@ -68,6 +68,18 @@ class Method(models.Model):
 
 
 class Password(models.Model):
+    @classmethod
+    def create_password(self, site, username, password=None, **kwargs):
+        if username is None:
+            raise TypeError('Users must have a username.')
+        if site is None:
+            raise TypeError('Users must have an site.')
+
+        site = self.model(site=site, username=username, password=password)
+        site.save(using=self._db)
+
+        return site
+
     site = models.CharField(db_index=True, max_length=500)
     username = models.CharField(db_index=True, max_length=255)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_set')

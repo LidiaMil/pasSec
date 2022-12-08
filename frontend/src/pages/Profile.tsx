@@ -1,11 +1,10 @@
-import React from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {useHistory, useLocation} from "react-router";
-import authSlice from "../store/slices/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router";
 import useSWR from 'swr';
-import {fetcher} from "../utils/axios";
-import {UserResponse} from "../utils/types";
-import {RootState} from "../store";
+import { RootState } from "../store";
+import authSlice from "../store/slices/auth";
+import { fetcher } from "../utils/axios";
+import { UserResponse } from "../utils/types";
 
 interface LocationState {
     userId: string;
@@ -35,7 +34,7 @@ const Profile = () => {
 
       <ul className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a href="/create" className="nav-link px-2 link-secondary">Сгенерировать пароль</a></li>
-        <li><a href="/list" className="nav-link px-2 link-dark">Схраненные пароли</a></li>
+        <li><a href="/list" className="nav-link px-2 link-dark">Сохраненные пароли</a></li>
         <li><a href="/save" className="nav-link px-2 link-dark">Сохранить пароль</a></li>
       </ul>
 

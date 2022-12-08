@@ -6,3 +6,12 @@ export interface UserResponse {
     updated: Date;
     id: string;
 }
+
+export interface PasswordResponse {
+    site: string;
+    username: string;
+    password: string;
+    created: Date;
+    updated: Date;
+    id: string;
+}
