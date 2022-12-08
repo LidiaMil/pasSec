@@ -68,12 +68,22 @@ const PasswordList = () => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
   const [eye, setEye] = useState(false);
+  const [passwordType, setPasswordType] = useState("password");
 
+  const togglePassword =()=>{
+    console.log(passwordType,'passwordType')
+    if(passwordType==="password")
+    {
+     setPasswordType("text")
+     return;
+    }
+    setPasswordType("password")
+  }
   // @ts-ignore
   const userId = account?.id;
 
   const user = useSWR<UserResponse>(`/user/${userId}/`, fetcher)
-  const password = useSWR<PasswordResponse>(`/password/view/`, fetcher)
+  const password = useSWR<PasswordResponse, []>(`/password/view/`, fetcher)
   console.log(password.data,'password', user)
 
   const columns = useMemo(
@@ -95,23 +105,26 @@ const PasswordList = () => {
             width: 150,
             Header: 'password',
             accessor: 'password',
+            Cell: () => (
+              <p>
+                { passwordType!=="password"? '***********' : 'password.data'}
+              </p>
+              ),
           },
           {
             width: 40,
             Header: 'look',
             accessor: 'look',
             Cell: () => (
-<button onClick={handleOpenEye}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
-  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
-  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
-</svg></button>
-      // {eye ? (
-      //   <ul className="menu">
-      //     <li className="menu-item">
-      //       <button onClick={lookPassword}>Посмотреть пароль</button>
-      //     </li>
-      //   </ul>
-      // ) : null}
+            <button onClick={togglePassword}>
+{ passwordType==="password"? <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
+<path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
+<path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
+</svg> :<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-slash-fill" viewBox="0 0 16 16">
+<path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"/>
+<path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z"/>
+</svg>}
+</button>
               )
           },
           {
@@ -119,19 +132,21 @@ const PasswordList = () => {
             Header: 'action',
             accessor: 'action',
             Cell: () => (
-              <button onClick={handleOpen}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path>
-</svg></button>
-      // {open ? (
-      //   <ul className="menu">
-      //     <li className="menu-item">
-      //       <button onClick={deletePassword}>Удалить пароль</button>
-      //     </li>
-      //     <li className="menu-item">
-      //       <button onClick={changePassword}>Изменить пароль</button>
-      //     </li>
-      //   </ul>
-      // ) : null}
+              <div>
+                <button onClick={handleOpen}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path>
+  </svg></button>
+        {open ? (
+          <ul className="menu">
+            <li className="menu-item">
+              <button onClick={deletePassword}>Удалить пароль</button>
+            </li>
+            <li className="menu-item">
+              <button onClick={changePassword}>Изменить пароль</button>
+            </li>
+          </ul>
+        ) : null} 
+              </div>
       )
           },
         ],
@@ -193,7 +208,8 @@ const PasswordList = () => {
       </div>
     </header>
       </div>
-      <div>
+      <div className="h-screen bg-gray-bg">
+<div className="w-full m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-1 px-3">
       {
           password.data ?
               <div className="w-full h-full text-center items-center">
@@ -203,79 +219,7 @@ const PasswordList = () => {
               <p className="text-center items-center">Loading ...</p>
       }
     </div>
-
-<div className="h-screen bg-gray-bg">
-<div className="w-full m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-1 px-3">
-
-      <table className="table">
-        <thead>
-        <tr>
-      <th scope="col">Сайт</th>
-      <th scope="col">Имя пользователя</th>
-      <th scope="col">Пароль</th>
-      <th scope="col"></th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody className="table-group-divider">
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td><button onClick={handleOpenEye}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
-  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
-  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
-</svg></button>
-      {eye ? (
-        <ul className="menu">
-          <li className="menu-item">
-            <button onClick={lookPassword}>Посмотреть пароль</button>
-          </li>
-        </ul>
-      ) : null}</td>
-            <td><button onClick={handleOpen}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path>
-</svg></button>
-      {open ? (
-        <ul className="menu">
-          <li className="menu-item">
-            <button onClick={deletePassword}>Удалить пароль</button>
-          </li>
-          <li className="menu-item">
-            <button onClick={changePassword}>Изменить пароль</button>
-          </li>
-        </ul>
-      ) : null}</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
-  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
-  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
-</svg></td>
-<td><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path>
-</svg></td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry the Bird</td>
-      <td>Thornton</td>
-      <td><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
-  <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
-  <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
-</svg></td>
-      <td><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path>
-</svg></td>
-    </tr>
-  </tbody>
-</table>
-
-</div>
-</div>
+    </div>
     </div>
   );
 };

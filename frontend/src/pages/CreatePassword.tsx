@@ -55,8 +55,8 @@ const CreatePassword = () => {
     </div>
       {
           user.data ?
-              <div className="w-full h-full text-center items-center">
-                  <p className="self-center my-auto">Welcome, {user.data?.username}</p>
+              <div className="w-full text-center items-center">
+                  <p className="self-center">Welcome, {user.data?.username}</p>
               </div>
               :
               <p className="text-center items-center">Loading ...</p>
@@ -132,7 +132,7 @@ const CreatePassword = () => {
   </div>
 
 </div>
-<div className="col-md-8 text-end">
+      <div className="col-md-8 text-end">
         <button
           // onClick={handleLogout}
           className="btn btn-primary"
