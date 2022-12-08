@@ -15,7 +15,9 @@ class RegistrationViewSet(ViewSet):
         serializer = self.serializer_class(data=request.data)
         print(serializer,'-------',request.data)
         serializer.is_valid(raise_exception=True)
+        print('-------')
         user = serializer.save()
+        print(user,'user')
         refresh = RefreshToken.for_user(user)
         res = {
             "refresh": str(refresh),

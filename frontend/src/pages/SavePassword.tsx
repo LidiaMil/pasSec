@@ -14,6 +14,11 @@ interface LocationState {
     userId: string;
 }
 
+//тут надо создать красивые поля input 
+// сайт, логин и пароль от сайта
+// селект для выбора метода 
+// и кнопка сохранить
+// редиркет на список паролей
 
 const SavePassword = () => {
   const account = useSelector((state: RootState) => state.auth.account);
@@ -31,21 +36,15 @@ const SavePassword = () => {
     history.push("/login");
   };
 
-  const handleSavePassword = (site:string, username: string, password: string) => {
+  const handleSavePassword = (site:string, username: string, password: string, method_id = 1 ) => {
     axios
-      .post(`${process.env.REACT_APP_API_URL}auth/register/`, { site, username, password })
+      .post(`${process.env.REACT_APP_API_URL}password/save/`, { site, username, password, method_id, user_id: userId })
       .then((res) => {
         console.log(res,'reeees---------')
-        dispatch(
-          authSlice.actions.setAuthTokens({
-            token: res.data.access,
-            refreshToken: res.data.refresh,
-          })
-        );
-        dispatch(authSlice.actions.setAccount(res.data.user));
+        // dispatch(authSlice.actions.setAccount(res.data.user));
         setLoading(false);
         console.log(res.data,'res.data')
-        history.push("/", {
+        history.push("/list", {
           userId: res.data.id
         });
       })
@@ -81,7 +80,7 @@ const SavePassword = () => {
 
       <ul className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li><a href="/create" className="nav-link px-2 link-secondary">Сгенерировать пароль</a></li>
-        <li><a href="/list" className="nav-link px-2 link-dark">Схраненные пароли</a></li>
+        <li><a href="/list" className="nav-link px-2 link-dark">Сохраненные пароли</a></li>
         <li><a href="/save" className="nav-link px-2 link-dark">Сохранить пароль</a></li>
       </ul>
 
@@ -95,7 +94,7 @@ const SavePassword = () => {
       </div>
     </header>
     </div>
-    <div className="h-screen flex bg-gray-bg1">
+    <div className="h-screen bg-gray-bg1">
       <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-16">
         <h1 className="text-2xl font-medium text-primary mt-4 mb-12 text-center">
            Сохранить пароль
@@ -106,7 +105,7 @@ const SavePassword = () => {
               className="border-b border-gray-300 w-full px-2 h-8 rounded focus:border-blue-500"
               id="site"
               type="site"
-              placeholder="site"
+              placeholder="Site"
               name="site"
               value={formik.values.site}
               onChange={formik.handleChange}
@@ -146,9 +145,8 @@ const SavePassword = () => {
               disabled={loading}
               className="rounded border-gray-300 p-2 w-32 bg-blue-700 text-white"
             >
-              Регистрация
+              Сохранить
             </button>
-            <a href="/login">Я уже зарегестрирован</a>
           </div>
         </form>
       </div>
