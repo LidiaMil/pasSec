@@ -16,6 +16,7 @@ function Register() {
     axios
       .post(`${process.env.REACT_APP_API_URL}auth/register/`, { username, email, password })
       .then((res) => {
+        console.log(res)
         dispatch(
           authSlice.actions.setAuthTokens({
             token: res.data.access,
@@ -36,7 +37,7 @@ function Register() {
 
   const formik = useFormik({
     initialValues: {
-      username: "l",
+      username: "",
       email: "",
       password: "",
     },
@@ -55,7 +56,7 @@ function Register() {
     <div className="h-screen flex bg-gray-bg1">
       <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-16">
         <h1 className="text-2xl font-medium text-primary mt-4 mb-12 text-center">
-           register in our app 🔐
+           Регистрация 🔐
         </h1>
         <form onSubmit={formik.handleSubmit}>
           <div className="space-y-4">

@@ -5,7 +5,7 @@ import useSWR from 'swr';
 import { RootState } from "../store";
 import authSlice from "../store/slices/auth";
 import { fetcher } from "../utils/axios";
-import { UserResponse } from "../utils/types";
+import { PasswordResponse, UserResponse } from "../utils/types";
 
 interface LocationState {
     userId: string;
@@ -29,7 +29,8 @@ const PasswordList = () => {
   const userId = account?.id;
 
   const user = useSWR<UserResponse>(`/user/${userId}/`, fetcher)
-
+  const password = useSWR<PasswordResponse>(`/password/view/`, fetcher)
+  console.log(password,'password')
   const handleLogout = () => {
     dispatch(authSlice.actions.setLogout());
     history.push("/login");
@@ -46,17 +47,17 @@ const PasswordList = () => {
   };
 
   const lookPassword = () => {
-    // do something
+    // показать пароль
     setOpen(false);
   };
 
   const deletePassword = () => {
-    // do something
+    // удаление пароля
     setOpen(false);
   };
 
   const changePassword = () => {
-    // do something
+    // изменение пароля
     setOpen(false);
   };
 
