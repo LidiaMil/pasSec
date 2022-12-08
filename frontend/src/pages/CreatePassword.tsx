@@ -100,30 +100,6 @@ const CreatePassword = () => {
   </div>
 
   <div className="list-group mx-0 w-auto">
-    <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios1" value=""/>
-      <span>
-        Метод 1
-        <small className="d-block text-muted">Описание преимущества метода 1</small>
-      </span>
-    </label>
-    <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios2" value=""/>
-      <span>
-      Метод 2
-        <small className="d-block text-muted">Описание преимущества метода 2</small>
-      </span>
-    </label>
-    <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios3" value=""/>
-      <span>
-      Метод 3
-        <small className="d-block text-muted">Описание преимущества метода 3</small>
-      </span>
-    </label>
-  </div>
-
-  <div className="list-group mx-0 w-auto">
   <label className="form-label">Количество паролей</label>
   <input type="range" className="form-range" id="customRange1"/>
   <label className="form-label">Длина паролей</label>
