@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import useSWR from 'swr';
@@ -21,6 +22,8 @@ const PasswordList = () => {
   const account = useSelector((state: RootState) => state.auth.account);
   const dispatch = useDispatch();
   const history = useHistory();
+  const [open, setOpen] = useState(false);
+
   // @ts-ignore
   const userId = account?.id;
 
@@ -30,6 +33,27 @@ const PasswordList = () => {
     dispatch(authSlice.actions.setLogout());
     history.push("/login");
   };
+
+
+  const handleOpen = () => {
+    setOpen(!open);
+  };
+
+  const lookPassword = () => {
+    // do something
+    setOpen(false);
+  };
+
+  const deletePassword = () => {
+    // do something
+    setOpen(false);
+  };
+
+  const changePassword = () => {
+    // do something
+    setOpen(false);
+  };
+
   return (
     <div className="w-full h-screen">
       <div className="w-full p-6">
@@ -72,13 +96,30 @@ const PasswordList = () => {
       <th scope="row">1</th>
       <td>Mark</td>
       <td>Otto</td>
-      <td><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
+      <td><button onClick={handleOpen}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
   <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
   <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
-</svg></td>
-<td><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+</svg></button>
+      {open ? (
+        <ul className="menu">
+          <li className="menu-item">
+            <button onClick={lookPassword}>Посмотреть пароль</button>
+          </li>
+        </ul>
+      ) : null}</td>
+            <td><button onClick={handleOpen}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
   <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path>
-</svg></td>
+</svg></button>
+      {open ? (
+        <ul className="menu">
+          <li className="menu-item">
+            <button onClick={deletePassword}>Удалить пароль</button>
+          </li>
+          <li className="menu-item">
+            <button onClick={changePassword}>Изменить пароль</button>
+          </li>
+        </ul>
+      ) : null}</td>
     </tr>
     <tr>
       <th scope="row">2</th>
