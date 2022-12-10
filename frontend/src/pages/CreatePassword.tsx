@@ -63,6 +63,8 @@ const CreatePassword = () => {
       }
       <div className="d-flex gap-5 justify-content-center">
   <div className="list-group mx-0 w-auto">
+    <form>
+
     <label className="list-group-item d-flex gap-2">
       <input className="form-check-input flex-shrink-0" type="checkbox" value=""/>
       <span>
@@ -97,15 +99,20 @@ const CreatePassword = () => {
         Избегать повторения символов
       </span>
     </label>
-  </div>
 
-  <div className="list-group mx-0 w-auto">
+
+    <div className="list-group mx-0 w-auto">
   <label className="form-label">Количество паролей</label>
   <input type="range" className="form-range" id="customRange1"/>
   <label className="form-label">Длина паролей</label>
   <input type="range" className="form-range" id="customRange1"/>
 
   </div>
+  
+    </form>
+  </div>
+
+
 
 </div>
       <div className="col-md-8 text-end">
