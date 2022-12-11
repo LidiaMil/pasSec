@@ -26,6 +26,7 @@ const SavePassword = () => {
   const history = useHistory();
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
   // @ts-ignore
   const userId = account?.id;
 

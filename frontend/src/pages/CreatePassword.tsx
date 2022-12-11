@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import useSWR from 'swr';
@@ -20,6 +21,10 @@ const CreatePassword = () => {
   const account = useSelector((state: RootState) => state.auth.account);
   const dispatch = useDispatch();
   const history = useHistory();
+  const [checkedState, setCheckedState] = useState(
+    new Array(5).fill(false)
+  );
+
   // @ts-ignore
   const userId = account?.id;
 
@@ -29,6 +34,21 @@ const CreatePassword = () => {
     dispatch(authSlice.actions.setLogout());
     history.push("/login");
   };
+
+  const handleChange =()=>{
+    console.log(setCheckedState,'checkedState', checkedState)
+  };
+
+  const handleOnChange = (position:number) => {
+    const updatedCheckedState = checkedState.map((item, index) =>
+      index === position ? !item : item
+    );
+
+    setCheckedState(updatedCheckedState);
+
+    console.log(position,'position')
+  };
+
   return (
     <div className="w-full h-screen">
     <div className="w-full p-6">
@@ -64,37 +84,36 @@ const CreatePassword = () => {
       <div className="d-flex gap-5 justify-content-center">
   <div className="list-group mx-0 w-auto">
     <form>
-
-    <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="checkbox" value=""/>
+      <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="checkbox" value="Numbers" checked={checkedState[0]} onChange={() => handleOnChange(0)}/>
       <span>
         Цифры
         <small className="d-block text-muted">от 0 до 9</small>
       </span>
     </label>
     <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="checkbox" value=""/>
+      <input className="form-check-input flex-shrink-0" type="checkbox" value="LowerCase"  checked={checkedState[1]} onChange={() => handleOnChange(1)}/>
       <span>
         Строчные буквы
         <small className="d-block text-muted">a-z</small>
       </span>
     </label>
     <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="checkbox" value=""/>
+      <input className="form-check-input flex-shrink-0" type="checkbox" value="UpperLetters"  checked={checkedState[2]} onChange={() => handleOnChange(2)}/>
       <span>
         Заглавные буквы
         <small className="d-block text-muted">A-Z</small>
       </span>
     </label>
     <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="checkbox" value=""/>
+      <input className="form-check-input flex-shrink-0" type="checkbox" value="SpecialSymbols"  checked={checkedState[3]} onChange={() => handleOnChange(3)}/>
       <span>
         Специальные символы
         <small className="d-block text-muted">! " # $ % & ' ( ) * + , - . / : ; = ? @ [ \ ] ^ _`  | ~ </small>
       </span>
     </label>
     <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="checkbox" value=""/>
+      <input className="form-check-input flex-shrink-0" type="checkbox" value="UniqueSymbols"  checked={checkedState[4]} onChange={() => handleOnChange(4)}/>
       <span>
         Избегать повторения символов
       </span>
@@ -108,7 +127,6 @@ const CreatePassword = () => {
   <input type="range" className="form-range" id="customRange1"/>
 
   </div>
-  
     </form>
   </div>
 
@@ -117,7 +135,7 @@ const CreatePassword = () => {
 </div>
       <div className="col-md-8 text-end">
         <button
-          // onClick={handleLogout}
+          onClick={handleChange}
           className="btn btn-primary"
         >
           Сгенерировать
