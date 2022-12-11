@@ -25,7 +25,7 @@ class MethodSerializer(serializers.ModelSerializer):
 class PasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Password
-        fields = ['id', 'site', 'username', 'password', 'created', 'updated']
+        fields = ['id', 'site', 'username', 'password', 'user_id','method_id','created', 'updated']
         read_only_field = ['created', 'updated']
 
 class PasswordSaveSerializer(PasswordSerializer):

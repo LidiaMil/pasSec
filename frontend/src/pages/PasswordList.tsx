@@ -66,24 +66,30 @@ const PasswordList = () => {
   const account = useSelector((state: RootState) => state.auth.account);
   const dispatch = useDispatch();
   const history = useHistory();
-  const [open, setOpen] = useState(false);
-  const [eye, setEye] = useState(false);
-  const [passwordType, setPasswordType] = useState("password");
 
-  const togglePassword =()=>{
-    console.log(passwordType,'passwordType')
-    if(passwordType==="password")
-    {
-     setPasswordType("text")
-     return;
-    }
-    setPasswordType("password")
-  }
   // @ts-ignore
   const userId = account?.id;
 
   const user = useSWR<UserResponse>(`/user/${userId}/`, fetcher)
   const password = useSWR<PasswordResponse, []>(`/password/view/`, fetcher)
+  console.log(password.data)
+  //пофиксить тут хардкод
+  const [passwordType, setPasswordType] =  useState(
+    new Array(100).fill([false,false])
+  );
+
+  const togglePassword =()=>{
+    const position = 0
+
+    const updatedCheckedState = passwordType.map((item, index) => 
+      index === position ? [!item[0],item[1]] : [item[0],item[1]]
+    );
+
+    setPasswordType(updatedCheckedState);
+    console.log(passwordType[0],'passwordType')
+
+  }
+
   console.log(password.data,'password', user)
 
   const columns = useMemo(
@@ -91,6 +97,11 @@ const PasswordList = () => {
       {
         Header: 'Менеджер паролей',
         columns: [
+          {
+            width: 300,
+            Header: 'id',
+            accessor: 'id',
+          },
           {
             width: 300,
             Header: 'site',
@@ -105,9 +116,9 @@ const PasswordList = () => {
             width: 150,
             Header: 'password',
             accessor: 'password',
-            Cell: () => (
+            Cell: (password:any) => (
               <p>
-                { passwordType!=="password"? '***********' : 'password.data'}
+                { passwordType[0][0]==false? '***********' : password.value}
               </p>
               ),
           },
@@ -117,7 +128,7 @@ const PasswordList = () => {
             accessor: 'look',
             Cell: () => (
             <button onClick={togglePassword}>
-{ passwordType==="password"? <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
+{ passwordType[0][0]==false? <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
 <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
 <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
 </svg> :<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-slash-fill" viewBox="0 0 16 16">
@@ -136,7 +147,7 @@ const PasswordList = () => {
                 <button onClick={handleOpen}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
     <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path>
   </svg></button>
-        {open ? (
+        {passwordType[0][1]==true? (
           <ul className="menu">
             <li className="menu-item">
               <button onClick={deletePassword}>Удалить пароль</button>
@@ -161,27 +172,28 @@ const PasswordList = () => {
 
 
   const handleOpen = () => {
-    setOpen(!open);
-  };
+    console.log('handleOpen')
+    const position = 0
+    const updatedCheckedState = passwordType.map((item, index) => 
+    index === position ? [item[0],!item[1]] : [item[0],item[1]]
+    );
 
-
-  const handleOpenEye = () => {
-    setEye(!eye);
-  };
-
-  const lookPassword = () => {
-    // показать пароль
-    setOpen(false);
+    console.log(updatedCheckedState[0],'passwordType')
+    setPasswordType(updatedCheckedState);
   };
 
   const deletePassword = () => {
     // удаление пароля
-    setOpen(false);
+    console.log('handleDelete')
+
+    // setOpen(false);
   };
 
   const changePassword = () => {
     // изменение пароля
-    setOpen(false);
+    // setOpen(false);
+    console.log('changePassword')
+
   };
 
   return (
