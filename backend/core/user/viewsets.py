@@ -1,8 +1,13 @@
-from core.user.serializers import UserSerializer,MethodSerializer, PasswordSerializer
+from core.user.serializers import UserSerializer, MethodSerializer, PasswordSerializer
 from core.user.models import User, Password, Method
-from rest_framework import viewsets
+from django.core.exceptions import BadRequest
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
+from rest_framework.response import Response
+
+from .encode_decode import ENCODING_METHODS, DECODING_METHODS
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -43,6 +48,33 @@ class PasswordViewSet(viewsets.ModelViewSet):
         self.check_object_permissions(self.request, obj)
 
         return obj
+
+    @action(methods='put', detail=True)
+    def encode(self):
+        obj = self.get_object()
+        try:
+            new_password = ENCODING_METHODS[self.request.data](obj.password)
+            obj.password = new_password
+            obj.save()
+            return Response(status=status.HTTP_200_OK)
+        except KeyError:
+            raise BadRequest({
+                'msg': 'Ошибка кодирования пароля'
+            })
+
+    @action(methods='put', detail=True)
+    def decode(self):
+        obj = self.get_object()
+        try:
+            new_password = DECODING_METHODS[self.request.data](obj.password)
+            obj.password = new_password
+            obj.save()
+            return Response(status=status.HTTP_200_OK)
+        except KeyError:
+            raise BadRequest({
+                'msg': 'Ошибка декодирования пароля'
+            })
+
 
 class MethodViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
