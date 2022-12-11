@@ -26,7 +26,7 @@ const SavePassword = () => {
   const history = useHistory();
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState("");
+  const [method, setMethod] = useState();
   // @ts-ignore
   const userId = account?.id;
 
@@ -37,9 +37,14 @@ const SavePassword = () => {
     history.push("/login");
   };
 
-  const handleSavePassword = (site:string, username: string, password: string, method_id = 1 ) => {
+  const handleChange = (event: any) => {
+    setMethod(event.target.value)
+    console.log(method,'method')
+  }
+
+  const handleSavePassword = (site:string, username: string, password: string ) => {
     axios
-      .post(`${process.env.REACT_APP_API_URL}password/save/`, { site, username, password, method_id, user_id: userId })
+      .post(`${process.env.REACT_APP_API_URL}password/save/`, { site, username, password, method_id: method, user_id: userId })
       .then((res) => {
         console.log(res,'reeees---------')
         // dispatch(authSlice.actions.setAccount(res.data.user));
@@ -56,6 +61,7 @@ const SavePassword = () => {
 
   const formik = useFormik({
     initialValues: {
+      method,
       site: "",
       username: "",
       password: "",
@@ -95,37 +101,41 @@ const SavePassword = () => {
       </div>
     </header>
     </div>
-
-  <div className="list-group mx-0 w-auto">
-    <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios1" value=""/>
-      <span>
-        Метод 1
-        <small className="d-block text-muted">Описание преимущества метода 1</small>
-      </span>
-    </label>
-    <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios2" value=""/>
-      <span>
-      Метод 2
-        <small className="d-block text-muted">Описание преимущества метода 2</small>
-      </span>
-    </label>
-    <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios3" value=""/>
-      <span>
-      Метод 3
-        <small className="d-block text-muted">Описание преимущества метода 3</small>
-      </span>
-    </label>
-  </div>
     <div className="h-screen bg-gray-bg1">
       <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-16">
         <h1 className="text-2xl font-medium text-primary mt-4 mb-12 text-center">
            Сохранить пароль
         </h1>
+
+
         <form onSubmit={formik.handleSubmit}>
           <div className="space-y-4">
+
+          <div className="list-group mx-0 w-auto">
+    <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios1" value="add_str" onChange={handleChange}/>
+      <span>
+      add_str
+        <small className="d-block text-muted">Описание преимущества метода 1</small>
+      </span>
+    </label>
+    <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios2" value="cesar" onChange={handleChange}/>
+      <span>
+      cesar
+        <small className="d-block text-muted">Описание преимущества метода 2</small>
+      </span>
+    </label>
+    <label className="list-group-item d-flex gap-2">
+      <input className="form-check-input flex-shrink-0" type="radio" name="listGroupRadios" id="listGroupRadios3" value="vernam" onChange={handleChange}/>
+      <span>
+      vernam
+        <small className="d-block text-muted">Описание преимущества метода 3</small>
+      </span>
+    </label>
+  </div>
+
+
           <input
               className="border-b border-gray-300 w-full px-2 h-8 rounded focus:border-blue-500"
               id="site"
