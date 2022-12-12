@@ -84,3 +84,28 @@ class PassordGenerateViewSet(ViewSet):
         
 
         return Response(passwords, status=status.HTTP_201_CREATED)
+
+
+class PassordDeleteViewSet(ViewSet):
+    serializer_class = PasswordSaveSerializer
+    permission_classes = (AllowAny,)
+    http_method_names = ['post']
+
+    def create(self, request, *args, **kwargs):
+        print(request.data,'request')
+        print(Password.objects.get(pk=request.data['id']))
+
+        return Response(request.data, status=status.HTTP_201_CREATED)
+
+class PassordUpdateViewSet(ViewSet):
+    serializer_class = PasswordSaveSerializer
+    permission_classes = (AllowAny,)
+    http_method_names = ['post']
+
+    def create(self, request, *args, **kwargs):
+        print(request.data,'request')
+        print(Password.objects.get(pk=request.data['id']))
+
+
+
+        return Response(request.data, status=status.HTTP_201_CREATED)

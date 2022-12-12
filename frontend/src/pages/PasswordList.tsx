@@ -8,6 +8,7 @@ import { fetcher } from "../utils/axios";
 import { PasswordResponse, UserResponse } from "../utils/types";
 import { useTable } from 'react-table';
 import BTable from 'react-bootstrap/Table';
+import axios from "axios";
 
 interface TableState {
   columns: any;
@@ -75,22 +76,27 @@ const PasswordList = () => {
   console.log(password.data)
   //пофиксить тут хардкод
   const [passwordType, setPasswordType] =  useState(
-    new Array(100).fill([false,false])
+    new Array(10).fill([true,true])
   );
 
-  const togglePassword =()=>{
-    const position = 0
+  const togglePassword =(id: any, index: any)=>{
+    console.log(index,'togglePassword')
+    const position = index
 
-    const updatedCheckedState = passwordType.map((item, index) => 
-      index === position ? [!item[0],item[1]] : [item[0],item[1]]
-    );
+    const updatedCheckedState = passwordType.map((item, index) => {
+      if(index === position ){
+        item = [!item[0],item[1]]
+      } else item = [item[0],item[1]]
+      console.log(item,'itemitemitemitem')
+      return item
+    });
 
     setPasswordType(updatedCheckedState);
-    console.log(passwordType[0],'passwordType')
+    console.log(updatedCheckedState,'---togglePasswordpasswordTypepasswordType---', passwordType)
+
+    console.log(passwordType[index],'togglePassword', index, id)
 
   }
-
-  console.log(password.data,'password', user)
 
   const columns = useMemo(
     () => [
@@ -116,9 +122,10 @@ const PasswordList = () => {
             width: 150,
             Header: 'password',
             accessor: 'password',
-            Cell: (password:any) => (
+            Cell: (password:any) => 
+              (
               <p>
-                { passwordType[0][0]==false? '***********' : password.value}
+                { passwordType[password.row.index][0] == false? '***********' : password.value}
               </p>
               ),
           },
@@ -126,9 +133,9 @@ const PasswordList = () => {
             width: 40,
             Header: 'look',
             accessor: 'look',
-            Cell: () => (
-            <button onClick={togglePassword}>
-{ passwordType[0][0]==false? <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
+            Cell: ({ cell }) => (
+            <button onClick={() => togglePassword(cell.row.cells[0].value, cell.row.index)}>
+{ passwordType[cell.row.index][0] ==false? <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
 <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
 <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
 </svg> :<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-slash-fill" viewBox="0 0 16 16">
@@ -142,18 +149,18 @@ const PasswordList = () => {
             width: 40,
             Header: 'action',
             accessor: 'action',
-            Cell: () => (
+            Cell: ({ cell }) => (
               <div>
-                <button onClick={handleOpen}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                <button onClick={() => handleOpen(cell.row.cells[0].value, cell.row.index)}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
     <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path>
   </svg></button>
-        {passwordType[0][1]==true? (
+        {passwordType[cell.row.index][1]==true? (
           <ul className="menu">
             <li className="menu-item">
-              <button onClick={deletePassword}>Удалить пароль</button>
+              <button onClick={() => deletePassword(cell.row.cells[0].value)}>Удалить пароль</button>
             </li>
             <li className="menu-item">
-              <button onClick={changePassword}>Изменить пароль</button>
+              <button onClick={() => changePassword(cell.row.cells[0].value)}>Изменить пароль</button>
             </li>
           </ul>
         ) : null} 
@@ -171,29 +178,52 @@ const PasswordList = () => {
   };
 
 
-  const handleOpen = () => {
-    console.log('handleOpen')
-    const position = 0
+  const handleOpen = (id:any, index: number) => {
+    const position = index
     const updatedCheckedState = passwordType.map((item, index) => 
     index === position ? [item[0],!item[1]] : [item[0],item[1]]
     );
 
-    console.log(updatedCheckedState[0],'passwordType')
+    console.log(updatedCheckedState[index],'passwordType',index,id)
     setPasswordType(updatedCheckedState);
   };
 
-  const deletePassword = () => {
+  const deletePassword = (id: number) => {
     // удаление пароля
-    console.log('handleDelete')
-
+    console.log('handleDelete', id)
+    axios
+    .post(`${process.env.REACT_APP_API_URL}password/delete/`, { id })
+    .then((res) => {
+      console.log(res,'reeees---------')
+      // dispatch(authSlice.actions.setAccount(res.data.user));
+      console.log(res.data,'res.data')
+      history.push("/list", {
+        userId: res.data.id
+      });
+    })
+    .catch((err) => {
+      console.log(err.response.data.detail);
+    });
     // setOpen(false);
   };
 
-  const changePassword = () => {
+  const changePassword = (id: number) => {
     // изменение пароля
-    // setOpen(false);
-    console.log('changePassword')
+    console.log('changePassword', id)
+    axios
+    .post(`${process.env.REACT_APP_API_URL}password/update/`, { id })
+    .then((res) => {
+      console.log(res,'reeees---------')
+      console.log(res.data,'res.data')
+      history.push("/list", {
+        userId: res.data.id
+      });
+    })
+    .catch((err) => {
+      console.log(err.response.data.detail);
+    });
 
+    // setOpen(false);
   };
 
   return (
