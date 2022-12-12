@@ -6,6 +6,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
+import random
+import string
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -57,3 +59,27 @@ class PassordCreateViewSet(ViewSet):
         return Response({
             "password": serializer.data,
         }, status=status.HTTP_201_CREATED)
+
+class PassordGenerateViewSet(ViewSet):
+    serializer_class = PasswordSaveSerializer
+    permission_classes = (AllowAny,)
+    http_method_names = ['post']
+
+    def create(self, request, *args, **kwargs):
+        #тут метод для хэширования пароля вызывается
+        print(request.data['checkedState'],'request')
+        SpecialSymbols = '!"#$%&()*+,-./:;=?@[\]^_`|~'
+        dictionary = ''
+
+        if(request.data['checkedState'][0] == True): dictionary += string.digits
+        if(request.data['checkedState'][1] == True): dictionary += string.ascii_lowercase
+        if(request.data['checkedState'][2] == True): dictionary += string.ascii_uppercase
+        if(request.data['checkedState'][3] == True): dictionary += SpecialSymbols
+
+        passwords = []
+        for i in range(request.data['count']):
+            if(request.data['checkedState'][4] == False):  passwords.append( ''.join(random.choice(dictionary) for i in range(request.data['length'])))
+            if(request.data['checkedState'][4] == True):  passwords.append( ''.join(random.sample(dictionary, request.data['length'])))
+        
+
+        return Response(passwords, status=status.HTTP_201_CREATED)

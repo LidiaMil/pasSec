@@ -6,6 +6,7 @@ import { RootState } from "../store";
 import authSlice from "../store/slices/auth";
 import { fetcher } from "../utils/axios";
 import { UserResponse } from "../utils/types";
+import axios from "axios";
 
 interface LocationState {
     userId: string;
@@ -24,6 +25,7 @@ const CreatePassword = () => {
   const [checkedState, setCheckedState] = useState(
     new Array(5).fill(false)
   );
+  const [password, setPassword] = useState([]);
 
   // @ts-ignore
   const userId = account?.id;
@@ -37,8 +39,32 @@ const CreatePassword = () => {
 
   const handleChange =()=>{
     console.log(setCheckedState,'checkedState', checkedState)
+    axios
+    .post(`${process.env.REACT_APP_API_URL}password/generate/`, { checkedState, count: 5, length:10 })
+    .then((res) => {
+      console.log(res,'reeees---------')
+      console.log(res.data,'res.data')
+      // history.push("/list", {
+      //   userId: res.data.id
+      // });
+      setPassword(res.data)
+    })
+    .catch((err) => {
+      console.log(err,'reeees---------')
+    });
   };
 
+  function PasswordList(props: any) {
+    const passwords = props.passwords;
+    const listItems = passwords.map((password: string) =>
+      <li>{password}</li>
+    );
+    return (
+      <ul>{listItems}</ul>
+    );
+  }
+
+  
   const handleOnChange = (position:number) => {
     const updatedCheckedState = checkedState.map((item, index) =>
       index === position ? !item : item
@@ -74,12 +100,12 @@ const CreatePassword = () => {
   </header>
     </div>
       {
-          user.data ?
-              <div className="w-full text-center items-center">
-                  <p className="self-center">Welcome, {user.data?.username}</p>
-              </div>
-              :
-              <p className="text-center items-center">Loading ...</p>
+            password ? 
+            <div className="w-full text-center items-center">
+                <PasswordList passwords={password} /> 
+            </div>
+            : <div></div>
+
       }
       <div className="d-flex gap-5 justify-content-center">
   <div className="list-group mx-0 w-auto">
@@ -99,7 +125,7 @@ const CreatePassword = () => {
       </span>
     </label>
     <label className="list-group-item d-flex gap-2">
-      <input className="form-check-input flex-shrink-0" type="checkbox" value="UpperLetters"  checked={checkedState[2]} onChange={() => handleOnChange(2)}/>
+      <input className="form-check-input flex-shrink-0" type="checkbox" value="UpperCase"  checked={checkedState[2]} onChange={() => handleOnChange(2)}/>
       <span>
         Заглавные буквы
         <small className="d-block text-muted">A-Z</small>
