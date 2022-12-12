@@ -45,10 +45,11 @@ class PassordCreateViewSet(ViewSet):
 
     def create(self, request, *args, **kwargs):
         print(Method.objects.get(name=request.data['method_id']))
+        #тут метод для хэширования пароля вызывается
+
         if(request.data['method_id'] == 'add_str'): request.data['method_id'] = '5'
         elif(request.data['method_id'] == 'vernam'): request.data['method_id'] = '4'
         elif(request.data['method_id'] == 'cesar'): request.data['method_id'] = '3'
-        #тут метод для хэширования пароля вызывается
         serializer = self.serializer_class(data=request.data)
         print(serializer,'-------',request.data)
         serializer.is_valid(raise_exception=True)
