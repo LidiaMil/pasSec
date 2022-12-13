@@ -37,7 +37,6 @@ class PasswordViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['updated']
     ordering = ['-updated']
-
     def get_queryset(self):
         return Password.objects.all()
 

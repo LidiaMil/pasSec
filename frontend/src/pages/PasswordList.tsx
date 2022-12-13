@@ -9,6 +9,8 @@ import { PasswordResponse, UserResponse } from "../utils/types";
 import { useTable } from 'react-table';
 import BTable from 'react-bootstrap/Table';
 import axios from "axios";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 
 interface TableState {
   columns: any;
@@ -72,11 +74,14 @@ const PasswordList = () => {
   const userId = account?.id;
 
   const user = useSWR<UserResponse>(`/user/${userId}/`, fetcher)
-  const password = useSWR<PasswordResponse, []>(`/password/view/`, fetcher)
+  const password = useSWR<PasswordResponse, []>(`/password/view`, fetcher)
   console.log(password.data)
+  const [passwordUpdate, setPasswordUpdate] =  useState({
+    id: '', password: ''
+  });
   //пофиксить тут хардкод
   const [passwordType, setPasswordType] =  useState(
-    new Array(10).fill([true,true])
+    new Array(20).fill([true])
   );
 
   const togglePassword =(id: any, index: any)=>{
@@ -85,9 +90,8 @@ const PasswordList = () => {
 
     const updatedCheckedState = passwordType.map((item, index) => {
       if(index === position ){
-        item = [!item[0],item[1]]
-      } else item = [item[0],item[1]]
-      console.log(item,'itemitemitemitem')
+        item = !item[0]
+      } else item = item[0]
       return item
     });
 
@@ -131,11 +135,11 @@ const PasswordList = () => {
           },
           {
             width: 40,
-            Header: 'look',
+            Header: '',
             accessor: 'look',
             Cell: ({ cell }) => (
             <button onClick={() => togglePassword(cell.row.cells[0].value, cell.row.index)}>
-{ passwordType[cell.row.index][0] ==false? <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
+{ passwordType[cell.row.index][0] == false? <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
 <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
 <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
 </svg> :<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-slash-fill" viewBox="0 0 16 16">
@@ -147,14 +151,10 @@ const PasswordList = () => {
           },
           {
             width: 40,
-            Header: 'action',
+            Header: '',
             accessor: 'action',
             Cell: ({ cell }) => (
               <div>
-                <button onClick={() => handleOpen(cell.row.cells[0].value, cell.row.index)}><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path>
-  </svg></button>
-        {passwordType[cell.row.index][1]==true? (
           <ul className="menu">
             <li className="menu-item">
               <button onClick={() => deletePassword(cell.row.cells[0].value)}>Удалить пароль</button>
@@ -163,7 +163,6 @@ const PasswordList = () => {
               <button onClick={() => changePassword(cell.row.cells[0].value)}>Изменить пароль</button>
             </li>
           </ul>
-        ) : null} 
               </div>
       )
           },
@@ -175,17 +174,6 @@ const PasswordList = () => {
   const handleLogout = () => {
     dispatch(authSlice.actions.setLogout());
     history.push("/login");
-  };
-
-
-  const handleOpen = (id:any, index: number) => {
-    const position = index
-    const updatedCheckedState = passwordType.map((item, index) => 
-    index === position ? [item[0],!item[1]] : [item[0],item[1]]
-    );
-
-    console.log(updatedCheckedState[index],'passwordType',index,id)
-    setPasswordType(updatedCheckedState);
   };
 
   const deletePassword = (id: number) => {
@@ -208,16 +196,35 @@ const PasswordList = () => {
   };
 
   const changePassword = (id: number) => {
+    console.log(id,'id')
     // изменение пароля
-    console.log('changePassword', id)
     axios
-    .post(`${process.env.REACT_APP_API_URL}password/update/`, { id })
+    .post(`${process.env.REACT_APP_API_URL}password/one/`, { id })
+    .then((res) => {
+      console.log(res,'reeees---------')
+      console.log(res.data[0],'res.data')
+      setPasswordUpdate({
+        id: res.data[0].id, password:res.data[0].password,
+      })
+
+    })
+    .catch((err) => {
+      console.log(err.response.data.detail);
+    });
+    // setOpen(false);
+  };
+
+  const handleChangePassword = (id: any, password: string) => {
+    // изменение пароля
+    console.log('changePassword', id, password)
+    axios
+    .post(`${process.env.REACT_APP_API_URL}password/update/`, { id, password })
     .then((res) => {
       console.log(res,'reeees---------')
       console.log(res.data,'res.data')
-      history.push("/list", {
-        userId: res.data.id
-      });
+      setPasswordUpdate({
+        id: '', password:'',
+      })
     })
     .catch((err) => {
       console.log(err.response.data.detail);
@@ -225,6 +232,21 @@ const PasswordList = () => {
 
     // setOpen(false);
   };
+
+
+  const formik = useFormik({
+    initialValues: {
+      id: passwordUpdate.id,
+      password: passwordUpdate.password,
+    },
+    onSubmit: (values) => {
+      handleChangePassword(passwordUpdate.id, values.password);
+    },
+    validationSchema: Yup.object({
+        password: Yup.string().trim().required("required field"),
+    }),
+  });
+
 
   return (
     <div className="w-full h-screen">
@@ -249,8 +271,51 @@ const PasswordList = () => {
         </button>
       </div>
     </header>
-      </div>
+    </div>
       <div className="h-screen bg-gray-bg">
+      {/* <div className="w-full m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-1 px-3"> */}
+      {
+          passwordUpdate.id ?
+          <div className="h-screen bg-gray-bg1">
+          <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-16">
+            <h1 className="text-2xl font-medium text-primary mt-4 mb-12 text-center">
+               Изменить пароль
+            </h1>
+    
+    
+            <form onSubmit={formik.handleSubmit}>
+              <div className="space-y-4">
+    
+    
+                <input
+                  className="border-b border-gray-300 w-full px-2 h-8 rounded focus:border-blue-500"
+                  id="password"
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+              </div>
+
+    
+              <div className="flex justify-center items-center mt-6">
+                <button
+                  type="submit"
+                  className="rounded border-gray-300 p-2 w-32 bg-blue-700 text-white"
+                >
+                  Сохранить
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+              :
+              <div></div>
+
+      }
+    {/* </div> */}
 <div className="w-full m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-1 px-3">
       {
           password.data ?

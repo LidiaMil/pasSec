@@ -87,6 +87,6 @@ class Password(models.Model):
     password = models.CharField(db_index=True, max_length=255)
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
-
+    
     def __str__(self):
-        return f"{self.username}"
+        return f"{self.site}"

@@ -1,5 +1,5 @@
 from rest_framework.routers import SimpleRouter
-from core.user.serializers import PassordCreateViewSet, PassordGenerateViewSet, PassordDeleteViewSet, PassordUpdateViewSet
+from core.user.serializers import PassordCreateViewSet, PassordGenerateViewSet, PassordDeleteViewSet, PassordUpdateViewSet, PassordOneViewSet
 from core.user.viewsets import UserViewSet, PasswordViewSet
 from core.auth.viewsets import LoginViewSet, RegistrationViewSet, RefreshViewSet
 
@@ -18,6 +18,7 @@ routes.register(r'user', UserViewSet, basename='user')
 routes.register(r'password/view', PasswordViewSet, basename='view')
 routes.register(r'password/save', PassordCreateViewSet, basename='save')
 routes.register(r'password/generate', PassordGenerateViewSet, basename='generate')
+routes.register(r'password/one', PassordOneViewSet, basename='update')
 routes.register(r'password/update', PassordUpdateViewSet, basename='update')
 routes.register(r'password/delete', PassordDeleteViewSet, basename='delete')
 

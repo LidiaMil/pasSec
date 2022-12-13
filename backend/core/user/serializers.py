@@ -49,7 +49,8 @@ class PassordCreateViewSet(ViewSet):
 
         #тут метод для хэширования пароля вызывается
         serializer = self.serializer_class(data=request.data)
-        password = ENCODING_METHODS[self.request.data['method_id']](serializer.data)
+        # password1 = ENCODING_METHODS[self.request.data['method_id']](serializer.data)
+        # print(password1,'password')
 
         if(request.data['method_id'] == 'add_str'): request.data['method_id'] = '5'
         elif(request.data['method_id'] == 'vernam'): request.data['method_id'] = '4'
@@ -57,7 +58,7 @@ class PassordCreateViewSet(ViewSet):
         print(serializer,'-------',request.data)
         serializer.is_valid(raise_exception=True)
         print('-------')
-        #password = serializer.save()
+        password = serializer.save()
         print(password,'password')
 
         return Response({
@@ -95,8 +96,7 @@ class PassordDeleteViewSet(ViewSet):
     http_method_names = ['post']
 
     def create(self, request, *args, **kwargs):
-        print(request.data,'request')
-        print(Password.objects.get(pk=request.data['id']))
+        Password.objects.filter(id=request.data['id']).delete()
 
         return Response(request.data, status=status.HTTP_201_CREATED)
 
@@ -106,9 +106,15 @@ class PassordUpdateViewSet(ViewSet):
     http_method_names = ['post']
 
     def create(self, request, *args, **kwargs):
-        print(request.data,'request')
-        print(Password.objects.get(pk=request.data['id']))
-
-
+        print(Password.objects.filter(id=request.data['id']).update(password=request.data['password']))
 
         return Response(request.data, status=status.HTTP_201_CREATED)
+
+class PassordOneViewSet(ViewSet):
+        serializer_class = PasswordSaveSerializer
+        permission_classes = (AllowAny,)
+        http_method_names = ['post']
+
+        def create(self, request, *args, **kwargs):
+            
+            return Response(Password.objects.filter(id=request.data['id']).values(), status=status.HTTP_201_CREATED)

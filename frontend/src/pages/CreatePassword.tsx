@@ -144,7 +144,7 @@ const CreatePassword = () => {
         Избегать повторения символов
       </span>
     </label>
-
+{/* 
 
     <div className="list-group mx-0 w-auto">
   <label className="form-label">Количество паролей</label>
@@ -152,14 +152,11 @@ const CreatePassword = () => {
   <label className="form-label">Длина паролей</label>
   <input type="range" className="form-range" id="customRange1"/>
 
-  </div>
+  </div> */}
     </form>
-  </div>
+    <div className="w-full h-screen">
 
-
-
-</div>
-      <div className="col-md-8 text-end">
+      <div className="w-full p-6">
         <button
           onClick={handleChange}
           className="btn btn-primary"
@@ -167,6 +164,13 @@ const CreatePassword = () => {
           Сгенерировать
         </button>
       </div>
+      </div>
+
+  </div>
+
+
+
+</div>
   </div>
 
   );
