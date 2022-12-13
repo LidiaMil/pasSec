@@ -79,27 +79,27 @@ const PasswordList = () => {
   const [passwordUpdate, setPasswordUpdate] =  useState({
     id: '', password: ''
   });
+  const [eye, setEye] =  useState(false);
   //пофиксить тут хардкод
   const [passwordType, setPasswordType] =  useState(
-    new Array(20).fill([true])
+    [true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
   );
 
-  const togglePassword =(id: any, index: any)=>{
+  const togglePassword = async(id: any, index: any)=>{
     console.log(index,'togglePassword')
     const position = index
 
     const updatedCheckedState = passwordType.map((item, index) => {
       if(index === position ){
-        item = !item[0]
-      } else item = item[0]
+        item = !item
+      } else{
+        item = item
+      }
       return item
     });
 
-    setPasswordType(updatedCheckedState);
-    console.log(updatedCheckedState,'---togglePasswordpasswordTypepasswordType---', passwordType)
-
-    console.log(passwordType[index],'togglePassword', index, id)
-
+    await setPasswordType(updatedCheckedState);
+    console.log(passwordType,'passwordTypepasswordTypepasswordType')
   }
 
   const columns = useMemo(
@@ -126,10 +126,9 @@ const PasswordList = () => {
             width: 150,
             Header: 'password',
             accessor: 'password',
-            Cell: (password:any) => 
-              (
+            Cell: (password:any) => (
               <p>
-                { passwordType[password.row.index][0] == false? '***********' : password.value}
+                { passwordType[password.row.index] == false? '***********' : password.value}
               </p>
               ),
           },
@@ -139,7 +138,7 @@ const PasswordList = () => {
             accessor: 'look',
             Cell: ({ cell }) => (
             <button onClick={() => togglePassword(cell.row.cells[0].value, cell.row.index)}>
-{ passwordType[cell.row.index][0] == false? <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
+{ passwordType[cell.row.index] == false? <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-fill" viewBox="0 0 16 16">
 <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
 <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
 </svg> :<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-eye-slash-fill" viewBox="0 0 16 16">
