@@ -80,9 +80,10 @@ const CreatePassword = () => {
     <div className="w-full p-6">
     <header className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
     <a href="/" className="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
-      <svg className="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use href="#bootstrap"></use></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-hexagon" viewBox="0 0 16 16">
+  <path d="M14 4.577v6.846L8 15l-6-3.577V4.577L8 1l6 3.577zM8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866L8.5.134z"></path>
+</svg>
     </a>
-
     <ul className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
       <li><a href="/create" className="nav-link px-2 link-secondary">Сгенерировать пароль</a></li>
       <li><a href="/list" className="nav-link px-2 link-dark">Сохраненные пароли</a></li>
